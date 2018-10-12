@@ -23,7 +23,7 @@ int main(){
 	//センサID，yyyy/m/d,h:mm,in,out,in累計,out累計\n
 	Sensor sensor[19];
 	string line;
-	int sensor1insum = 0;
+	int sensorinsum[19] = { 0 };
 	int i = 0;
 	while(getline(ifs, line)) {
 		vector<string> strvec = split(line, ',');
@@ -33,8 +33,11 @@ int main(){
 		/*for (int i = 0; i<strvec.size(); i++) {
 			printf("%d\n", stoi(strvec.at(i)));
 		}*/
+
 		std::cout << i+1 << sensor[i].GetIn() << sensor[i].GetOut() << std::endl;
-		if (i == 0) sensor1insum += sensor[i].GetIn();
+
+		sensorinsum[i] += sensor[i].GetIn();
+
 		if (i < 18) i++;
 		else i = 0;
 	}
