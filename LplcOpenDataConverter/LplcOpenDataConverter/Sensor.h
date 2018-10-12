@@ -28,18 +28,6 @@ private:
 
 };
 
-static int id = 0;
-Sensor::Sensor(){
-	//ID = id++;
-	x = 0;
-	y = 0;
-	in = 0;
-	out = 0;
-	//sumIn = 0;
-	//sumOut = 0;
-}
 
-Sensor::~Sensor(){
-}
 
 #endif // !SENSOR_H

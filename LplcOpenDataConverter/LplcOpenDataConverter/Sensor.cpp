@@ -1,5 +1,19 @@
 #include"Sensor.h"
 
+static int id = 0;
+Sensor::Sensor() {
+	//ID = id++;
+	x = 0;
+	y = 0;
+	in = 0;
+	out = 0;
+	//sumIn = 0;
+	//sumOut = 0;
+}
+
+Sensor::~Sensor() {
+}
+
 int Sensor::Set(int a, int b) {
 	x = a;
 	y = b;
