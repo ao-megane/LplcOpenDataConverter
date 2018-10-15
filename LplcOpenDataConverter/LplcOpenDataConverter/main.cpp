@@ -21,6 +21,9 @@ int main(){
 	//std::cout << "Hello World\n" << std::endl;
 	ifstream ifs("opendatas/20180501.csv");
 	//センサID，yyyy/m/d,h:mm,in,out,in累計,out累計\n
+	ofstream ofs;
+	ofs.open("opendatas/output.csv", ios::trunc);
+
 	Sensor sensor[19];
 	string line;
 	int sensorinsum[19] = { 0 };
@@ -34,12 +37,17 @@ int main(){
 			printf("%d\n", stoi(strvec.at(i)));
 		}*/
 
-		std::cout << i+1 << sensor[i].GetIn() << sensor[i].GetOut() << std::endl;
+		//std::cout << i+1 << sensor[i].GetIn() << sensor[i].GetOut() << std::endl;
 
 		sensorinsum[i] += sensor[i].GetIn();
 
 		if (i < 18) i++;
 		else i = 0;
+	}
+
+	for (int i = 0; i < 19; i++) {
+		ofs << sensorinsum[i] << "," << i + 1 << endl;
+		//ofs << "aaaaaaaaa" << endl;
 	}
 
 	return 0;
