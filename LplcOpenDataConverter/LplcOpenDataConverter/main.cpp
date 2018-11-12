@@ -26,7 +26,6 @@ int main(){
 	vector<vector<int>> in[8];
 	vector<vector<int>> out[8];
 
-
 	ifstream ifs;
 	ifs.open("mapdatas/map.txt");	//ƒ}ƒbƒv‚ÌL‚³‚Æ‚©
 	if (!ifs) {
