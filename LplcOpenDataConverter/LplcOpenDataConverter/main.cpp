@@ -23,8 +23,8 @@ int main(){
 	int width = 0;
 	int height = 0;
 	vector<vector<int>> map;
-	vector<vector<int>> in[8];
-	vector<vector<int>> out[8];
+	vector<vector<int>> in[19];
+	vector<vector<int>> out[19];
 
 	ifstream ifs;
 	ifs.open("mapdatas/map.txt");	//ƒ}ƒbƒv‚ÌL‚³‚Æ‚©
