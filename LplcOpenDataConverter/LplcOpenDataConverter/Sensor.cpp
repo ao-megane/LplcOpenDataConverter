@@ -3,8 +3,8 @@
 static int id = 0;
 Sensor::Sensor() {
 	ID = id++;
-	x = 0;
-	y = 0;
+	//x = 0;
+	//y = 0;
 	in = 0;
 	out = 0;
 	sumIn = 0;
@@ -14,11 +14,11 @@ Sensor::Sensor() {
 Sensor::~Sensor() {
 }
 
-int Sensor::Set(int a, int b) {
-	x = a;
-	y = b;
-	return 0;
-}
+//int Sensor::Set(int a, int b) {
+//	x = a;
+//	y = b;
+//	return 0;
+//}
 int Sensor::Add(int indata, int outdata) {
 	in = indata;
 	out = outdata;
