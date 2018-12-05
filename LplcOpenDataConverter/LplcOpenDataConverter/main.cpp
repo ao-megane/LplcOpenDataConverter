@@ -1,12 +1,10 @@
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <sstream>
 #include <vector>
+#include <time.h>
 #include "Sensor.h"
-
-const string START = "17:00";	//計測開始時刻	//hh:mmという形式なので注意
-const string END = "18:00";			//計測時間
+#include "date.h"
 
 using namespace std;
 
@@ -22,6 +20,12 @@ vector<string> split(string& input, char delimiter){//delimiterでinputを分割し，
 
 int main(){
 	string line;
+	string start;	//計測開始時刻	//hh:mmという形式なので注意
+	string end;		//計測終了時刻
+	string filename;	//たびたび変わるファイルネーム，使いまわしまくるので初期化を忘れないように
+	int year;
+	int month;
+	int date;
 	int i = 0;
 	int width = 0;
 	int height = 0;
@@ -32,15 +36,27 @@ int main(){
 	bool isTracking = false;
 
 	ifstream ifs;
+	ofstream ofs;
 	ifs.open("mapdatas/allmap/map.txt");	//マップの広さとか
 	if (!ifs) {
 		cout << "ファイルオープンに失敗" << "mapdatas/map.txt" << endl;
 	}
 	int mapdata[2] = { 0 };
-	while (getline(ifs, line)) {
+	if (getline(ifs, line)) {
 		vector<string> strvec = split(line, ',');
-		mapdata[i] = stoi(strvec.at(0));
-		i++;
+		mapdata[0] = stoi(strvec.at(0));
+	}
+	if (getline(ifs, line)) {
+		vector<string> strvec = split(line, ',');
+		mapdata[1] = stoi(strvec.at(0));
+	}
+	if (getline(ifs, line)) {
+		vector<string> strvec = split(line, ',');
+		start = strvec.at(0);
+	}
+	if (getline(ifs, line)) {
+		vector<string> strvec = split(line, ',');
+		end = strvec.at(0);
 	}
 	ifs.close();
 	width = mapdata[0];
@@ -57,150 +73,147 @@ int main(){
 		}
 	}
 
-	for (int i = 0; i < 19; i++) {//各センサ有効範囲格納
-		string a = "mapdatas/allmap/12/";
-		a += to_string(i + 1);
-		a += "in.csv";
+	for (int range = 0; range < 12; range++) {//センサ有効範囲についてのforループ
+		for (int i = 0; i < 19; i++) {//各センサに有効範囲を格納(センサについてのforループ)
+			filename = "mapdatas/allmap/";
+			filename += to_string(range + 1);
+			filename += "/";
+			filename += to_string(i + 1);
+			filename += "in.csv";
 
-		cout << a << endl;
-		ifs.open(a.c_str());
-		if (!ifs) {
-			cout << "ファイルオープンに失敗" << a << endl;
-		}
-
-		int j = 0, k = 0;
-		while (getline(ifs, line)) {
-			vector<string> strvec = split(line, ',');
-			for (k = 0; k < strvec.size(); k++) {
-				if (strvec.at(k) == "") in[i][j][k] = 0;
-				else in[i][j][k] = stoi(strvec.at(k));
+			cout << filename << endl;
+			ifs.open(filename.c_str());
+			if (!ifs) {
+				cout << "ファイルオープンに失敗" << filename << endl;
 			}
-			j++;
-		}
-		ifs.close();
 
-		a = "mapdatas/allmap/12/";
-		a += to_string(i + 1);
-		a += "out.csv";
-		cout << a << endl;
-		ifs.open(a.c_str());
-		if (!ifs) {
-			cout << "ファイルオープンに失敗" << a << endl;
-		}
-		j = 0; k = 0;
-		while (getline(ifs, line)) {
-			vector<string> strvec = split(line, ',');
-			for (k = 0; k < strvec.size(); k++) {
-				if (strvec.at(k) == "") out[i][j][k] = 0;
-				else out[i][j][k] = stoi(strvec.at(k));
+			int j = 0, k = 0;
+			while (getline(ifs, line)) {
+				vector<string> strvec = split(line, ',');
+				for (k = 0; k < strvec.size(); k++) {
+					if (strvec.at(k) == "") in[i][j][k] = 0;
+					else in[i][j][k] = stoi(strvec.at(k));
+				}
+				j++;
 			}
-			j++;
-		}
-		ifs.close();
+			ifs.close();
 
-	}
-	/*for (int i = 0; i < 19; i++) {
-		string a = "mapdatas/allmap/12/";
-		a += to_string(i + 1);
-		a += "out.csv";
-		cout << a << endl;
-		ifs.open(a.c_str());
-		if (!ifs) {
-			cout << "ファイルオープンに失敗" << a << endl;
-		}
-
-		int j = 0, k = 0;
-		while (getline(ifs, line)) {
-			vector<string> strvec = split(line, ',');
-			for (k = 0; k < strvec.size(); k++) {
-				out[i][j][k] = stoi(strvec.at(k));
+			filename = "mapdatas/allmap/";
+			filename += to_string(range + 1);
+			filename += "/";
+			filename += to_string(i + 1);
+			filename += "out.csv";
+			cout << filename << endl;
+			ifs.open(filename.c_str());
+			if (!ifs) {
+				cout << "ファイルオープンに失敗" << filename << endl;
 			}
-			j++;
+			j = 0; k = 0;
+			while (getline(ifs, line)) {
+				vector<string> strvec = split(line, ',');
+				for (k = 0; k < strvec.size(); k++) {
+					if (strvec.at(k) == "") out[i][j][k] = 0;
+					else out[i][j][k] = stoi(strvec.at(k));
+				}
+				j++;
+			}
+			ifs.close();
 		}
-		ifs.close();
-	}*/
-	for (int i = 0; i < map.size(); ++i) {//念のための初期化
-		for (int j = 0; j < map[i].size(); ++j) {
-			map[i][j] = 0;
-		}
-	}
 
-	cout << "----------------------------" << endl;
-	/*for (int i = 0; i < in[0].size(); ++i) {
-		printf("%3d ", i);
-		for (int j = 0; j < in[0][i].size(); ++j) {
-			printf("%2d",in[0][i][j]);
-		}
-		printf("\n");
-	}*/
-	
-
-	i = 0;
-	//センサID，yyyy/m/d, h:mm, in, out, in累計, out累計\n
-	ifs.open("opendatas/20180501.csv");
-	Sensor sensor[19];//格納データの内容を扱うクラス
-	while (getline(ifs, line)) {
-		vector<string> strvec = split(line, ',');//データ一行ゲット
-		if (strvec.at(2) == START) {//データの時間評価
-			isTracking = true;
-		}
-		if (isTracking) {
-			if (strvec.at(2) == END) {
-				isTracking = false;
+		for (int i = 0; i < map.size(); ++i) {//念のための初期化
+			for (int j = 0; j < map[i].size(); ++j) {
+				map[i][j] = 0;
 			}
 		}
-		if (isTracking) {
-			cout << "計測中:";
-			cout << strvec.at(2) << endl;
-			sensor[i].Add(stoi(strvec.at(3)), stoi(strvec.at(4)));
+		cout << "----------------------------" << endl;
 
-			/*for (int i = 0; i<strvec.size(); i++) {
-			printf("%d\n", stoi(strvec.at(i)));
-			}*/
+		i = 0;
+		//日付初期化
+		year = 2016;
+		month = 1;
+		date = 1;
 
-			//std::cout << i+1 << sensor[i].GetIn() << sensor[i].GetOut() << std::endl;
-
-			//sensorinsum[i] += sensor[i].GetIn();
-
-			if (i < 18) {
-				i++;
+		//while(year < 2017) {//日付(オープンデータ)についてのループ
+		for(int count=0;count<24;){
+			filename = "opendatas/";
+			filename += ttos(year, month, date);
+			filename += ".csv";
+			ifs.open(filename);	//センサID，yyyy/m/d, h:mm, in, out, in累計, out累計\n
+			if (!ifs) {
+				cout << "ファイルオープンに失敗" << filename << endl;
+				tomorrow(&year, &month, &date);
+				continue;
 			}
-			else {//１周期終了，マップ更新
-				cout << "動作中！！" << endl;
-				for (int id = 0; id < 19; id++) {
-					for (int h = 0; h < height; h++) {
-						for (int w = 0; w < width; w++) {
-							map[h][w] += in[id][h][w] * sensor[id].GetIn();
-							//cout << in[id][h][w] << endl;//ここがおかしい
-							map[h][w] += out[id][h][w] * sensor[id].GetOut();
-						}
+			else {
+				cout << "ファイルオープンに成功" << filename << endl;
+				count++;
+			}
+			Sensor sensor[19];//格納データの内容を扱うクラス
+			while (getline(ifs, line)) {//オープンデータ内のループ
+				vector<string> strvec = split(line, ',');//データ一行ゲット
+				if (strvec.at(2) == start) {//データの時間評価
+					isTracking = true;
+				}
+				if (isTracking) {
+					if (strvec.at(2) == end) {
+						isTracking = false;
 					}
 				}
+				if (isTracking) {
+					//cout << "計測中:";
+					//cout << strvec.at(2) << endl;
+					sensor[i].Add(stoi(strvec.at(3)), stoi(strvec.at(4)));
 
-				i = 0;
+					if (i < 18) {
+						i++;
+					}
+					else {//１周期終了，マップ更新
+						//cout << "動作中！！" << endl;
+						for (int id = 0; id < 19; id++) {
+							for (int h = 0; h < height; h++) {
+								for (int w = 0; w < width; w++) {
+									map[h][w] += in[id][h][w] * sensor[id].GetIn();
+									map[h][w] += out[id][h][w] * sensor[id].GetOut();
+								}
+							}
+						}
+						i = 0;
+					}
+				}
+				else {
+					//cout << strvec.at(2) << endl;
+				}
 			}
-		}
-		else {
-			cout << strvec.at(2) << endl;
-		}
-	}
-	
-	ofstream ofs;
-	ofs.open("results/output.csv", ios::trunc);
-	//for (int i = 0; i < 19; i++) {
-	//	//ofs << sensorinsum[i] << "," << i + 1 << endl;
-	//	ofs << sensor[i].GetID() << "," << sensor[i].GetSumIn() << endl;
-	//}
+			ifs.close();
 
-	cout << "----------------------------" << endl;
-	for (int i = 0; i < map.size(); ++i) {
-		//printf("%3d ", i);
-		for (int j = 0; j < map[i].size(); ++j) {
-			//printf("%5d", map[i][j]);
-			ofs << map[i][j] << ",";
+			
+			filename = "results/";
+			filename += to_string(range + 1);
+			filename += "/";
+			filename += ttos(year, month, date);
+			filename += ".csv";
+			ofs.open(filename, ios::trunc);
+
+			cout << "----------------------------" << endl;
+			for (int i = 0; i < map.size(); ++i) {
+				//printf("%3d ", i);
+				for (int j = 0; j < map[i].size(); ++j) {
+					//printf("%5d", map[i][j]);
+					ofs << map[i][j] << ",";
+				}
+				//printf("\n");
+				ofs << endl;
+			}
+			ofs.close();
+
+			//map初期化
+			for (int i = 0; i < map.size(); ++i) {
+				for (int j = 0; j < map[i].size(); ++j) {
+					map[i][j] = 0;
+				}
+			}
+			tomorrow(&year, &month, &date);
 		}
-		//printf("\n");
-		ofs << endl;
 	}
 
 	return 0;
