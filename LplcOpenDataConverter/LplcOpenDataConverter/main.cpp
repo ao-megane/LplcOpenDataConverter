@@ -133,8 +133,8 @@ int main(){
 		month = 1;
 		date = 1;
 
-		//while(year < 2017) {//日付(オープンデータ)についてのループ
-		for(int count=0;count<24;){
+		while(year < 2017) {//日付(オープンデータ)についてのループ
+		//for(int count=0;count<24;){
 			filename = "opendatas/";
 			filename += ttos(year, month, date);
 			filename += ".csv";
@@ -146,7 +146,7 @@ int main(){
 			}
 			else {
 				cout << "ファイルオープンに成功" << filename << endl;
-				count++;
+				//count++;
 			}
 			Sensor sensor[19];//格納データの内容を扱うクラス
 			while (getline(ifs, line)) {//オープンデータ内のループ

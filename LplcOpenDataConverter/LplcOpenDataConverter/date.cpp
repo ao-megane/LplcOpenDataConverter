@@ -17,7 +17,7 @@ void tomorrow(int *y, int *m, int *d){
 	else {
 		if (*m != 12)   // 12月以外の最終日
 			(*m)++;
-		else {      // １２月３１日
+		else {      // 12月31日
 			(*y)++;
 			*m = 1;
 		}
@@ -45,3 +45,5 @@ string ttos(int y, int m, int d) {//timeを受け取り，オープンデータに合わせてstri
 
 	return result;
 }
+
+//曜日を求める(ツェラーの公式)(http://www.aoharu-b.com/cgi/sk/2008/03/zellerc.html)
