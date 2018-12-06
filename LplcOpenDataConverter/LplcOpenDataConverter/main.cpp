@@ -73,6 +73,9 @@ int main(){
 		}
 	}
 
+	Sensor sensor[19];//格納データの内容を扱うクラス
+	//int data[12][19][2 * 19 + 1];//range,id,in,out,in,out,,,avg
+
 	for (int range = 0; range < 12; range++) {//センサ有効範囲についてのforループ
 		for (int i = 0; i < 19; i++) {//各センサに有効範囲を格納(センサについてのforループ)
 			filename = "mapdatas/allmap/";
@@ -129,12 +132,19 @@ int main(){
 
 		i = 0;
 		//日付初期化
-		year = 2016;
-		month = 1;
+		year = 2018;
+		month = 6;
 		date = 1;
 
-		while(year < 2017) {//日付(オープンデータ)についてのループ
-		//for(int count=0;count<24;){
+		//while(year < 2017) {//日付(オープンデータ)についてのループ
+		for(int count=0;count<30;count++){
+
+			for (int i = 0; i < map.size(); ++i) {
+				for (int j = 0; j < map[i].size(); ++j) {
+					map[i][j] = 0;
+				}
+			}
+
 			filename = "opendatas/";
 			filename += ttos(year, month, date);
 			filename += ".csv";
@@ -148,7 +158,11 @@ int main(){
 				cout << "ファイルオープンに成功" << filename << endl;
 				//count++;
 			}
-			Sensor sensor[19];//格納データの内容を扱うクラス
+
+			for (int i = 0; i < 19; i++) {//センサの初期化
+				sensor[i].Initialize();
+			}
+			
 			while (getline(ifs, line)) {//オープンデータ内のループ
 				vector<string> strvec = split(line, ',');//データ一行ゲット
 				if (strvec.at(2) == start) {//データの時間評価
@@ -162,7 +176,7 @@ int main(){
 				if (isTracking) {
 					//cout << "計測中:";
 					//cout << strvec.at(2) << endl;
-					sensor[i].Add(stoi(strvec.at(3)), stoi(strvec.at(4)));
+					sensor[i].nAdd(stoi(strvec.at(3)), stoi(strvec.at(4)));
 
 					if (i < 18) {
 						i++;
@@ -171,9 +185,9 @@ int main(){
 						//cout << "動作中！！" << endl;
 						for (int id = 0; id < 19; id++) {
 							for (int h = 0; h < height; h++) {
-								for (int w = 0; w < width; w++) {
-									map[h][w] += in[id][h][w] * sensor[id].GetIn();
-									map[h][w] += out[id][h][w] * sensor[id].GetOut();
+								for (int w = 0; w < width; w++) {//mapに書き込む
+									map[h][w] += in[id][h][w] * sensor[id].GetnIn();
+									map[h][w] += out[id][h][w] * sensor[id].GetnOut();
 								}
 							}
 						}
@@ -185,7 +199,6 @@ int main(){
 				}
 			}
 			ifs.close();
-
 			
 			filename = "results/";
 			filename += to_string(range + 1);
@@ -206,15 +219,21 @@ int main(){
 			}
 			ofs.close();
 
-			//map初期化
-			for (int i = 0; i < map.size(); ++i) {
-				for (int j = 0; j < map[i].size(); ++j) {
-					map[i][j] = 0;
-				}
+			filename = "results/ratio/";
+			//filename += to_string(range + 1);
+			//filename += "/";
+			filename += ttos(year, month, date);
+			filename += ".csv";
+			ofs.open(filename, ios::trunc);
+			for (int i = 0; i < 19; i++) {
+				ofs << sensor[i].GetID() + 1 << "," << sensor[i].GetSumnIn() << "," << sensor[i].GetSumnOut();
+				ofs << endl;
 			}
+			ofs.close();
+			
 			tomorrow(&year, &month, &date);
-		}
-	}
+		}//30日終わり
+	}//range終わり
 
 	return 0;
 }
