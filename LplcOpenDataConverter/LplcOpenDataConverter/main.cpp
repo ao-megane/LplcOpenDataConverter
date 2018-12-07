@@ -77,162 +77,184 @@ int main(){
 	//int data[12][19][2 * 19 + 1];//range,id,in,out,in,out,,,avg
 
 	for (int range = 0; range < 12; range++) {//センサ有効範囲についてのforループ
-		for (int i = 0; i < 19; i++) {//各センサに有効範囲を格納(センサについてのforループ)
-			filename = "mapdatas/allmap/";
-			filename += to_string(range + 1);
-			filename += "/";
-			filename += to_string(i + 1);
-			filename += "in.csv";
+		for (int time = 5; time < 26; time++) {
+			for (int i = 0; i < 19; i++) {//各センサに有効範囲を格納(センサについてのforループ)
+				filename = "mapdatas/allmap/";
+				filename += to_string(range + 1);
+				filename += "/";
+				filename += to_string(i + 1);
+				filename += "in.csv";
 
-			cout << filename << endl;
-			ifs.open(filename.c_str());
-			if (!ifs) {
-				cout << "ファイルオープンに失敗" << filename << endl;
-			}
-
-			int j = 0, k = 0;
-			while (getline(ifs, line)) {
-				vector<string> strvec = split(line, ',');
-				for (k = 0; k < strvec.size(); k++) {
-					if (strvec.at(k) == "") in[i][j][k] = 0;
-					else in[i][j][k] = stoi(strvec.at(k));
+				cout << filename << endl;
+				ifs.open(filename.c_str());
+				if (!ifs) {
+					cout << "ファイルオープンに失敗" << filename << endl;
 				}
-				j++;
-			}
-			ifs.close();
 
-			filename = "mapdatas/allmap/";
-			filename += to_string(range + 1);
-			filename += "/";
-			filename += to_string(i + 1);
-			filename += "out.csv";
-			cout << filename << endl;
-			ifs.open(filename.c_str());
-			if (!ifs) {
-				cout << "ファイルオープンに失敗" << filename << endl;
-			}
-			j = 0; k = 0;
-			while (getline(ifs, line)) {
-				vector<string> strvec = split(line, ',');
-				for (k = 0; k < strvec.size(); k++) {
-					if (strvec.at(k) == "") out[i][j][k] = 0;
-					else out[i][j][k] = stoi(strvec.at(k));
+				int j = 0, k = 0;
+				while (getline(ifs, line)) {
+					vector<string> strvec = split(line, ',');
+					for (k = 0; k < strvec.size(); k++) {
+						if (strvec.at(k) == "") in[i][j][k] = 0;
+						else in[i][j][k] = stoi(strvec.at(k));
+					}
+					j++;
 				}
-				j++;
+				ifs.close();
+
+				filename = "mapdatas/allmap/";
+				filename += to_string(range + 1);
+				filename += "/";
+				filename += to_string(i + 1);
+				filename += "out.csv";
+				cout << filename << endl;
+				ifs.open(filename.c_str());
+				if (!ifs) {
+					cout << "ファイルオープンに失敗" << filename << endl;
+				}
+				j = 0; k = 0;
+				while (getline(ifs, line)) {
+					vector<string> strvec = split(line, ',');
+					for (k = 0; k < strvec.size(); k++) {
+						if (strvec.at(k) == "") out[i][j][k] = 0;
+						else out[i][j][k] = stoi(strvec.at(k));
+					}
+					j++;
+				}
+				ifs.close();
 			}
-			ifs.close();
-		}
 
-		for (int i = 0; i < map.size(); ++i) {//念のための初期化
-			for (int j = 0; j < map[i].size(); ++j) {
-				map[i][j] = 0;
-			}
-		}
-		cout << "----------------------------" << endl;
-
-		i = 0;
-		//日付初期化
-		year = 2018;
-		month = 6;
-		date = 1;
-
-		//while(year < 2017) {//日付(オープンデータ)についてのループ
-		for(int count=0;count<30;count++){
-
-			for (int i = 0; i < map.size(); ++i) {
+			for (int i = 0; i < map.size(); ++i) {//念のための初期化
 				for (int j = 0; j < map[i].size(); ++j) {
 					map[i][j] = 0;
 				}
 			}
+			cout << "----------------------------" << endl;
 
-			filename = "opendatas/";
-			filename += ttos(year, month, date);
-			filename += ".csv";
-			ifs.open(filename);	//センサID，yyyy/m/d, h:mm, in, out, in累計, out累計\n
-			if (!ifs) {
-				cout << "ファイルオープンに失敗" << filename << endl;
-				tomorrow(&year, &month, &date);
-				continue;
-			}
-			else {
-				cout << "ファイルオープンに成功" << filename << endl;
-				//count++;
-			}
+			i = 0;
+			//日付初期化
+			year = 2018;
+			month = 6;
+			date = 1;
 
-			for (int i = 0; i < 19; i++) {//センサの初期化
-				sensor[i].Initialize();
-			}
-			
-			while (getline(ifs, line)) {//オープンデータ内のループ
-				vector<string> strvec = split(line, ',');//データ一行ゲット
-				if (strvec.at(2) == start) {//データの時間評価
-					isTracking = true;
-				}
-				if (isTracking) {
-					if (strvec.at(2) == end) {
-						isTracking = false;
+			//while(year < 2017) {//日付(オープンデータ)についてのループ
+			int data[19 * 2] = { 0 };
+			for (int count = 0; count < 30; count++) {
+				for (int i = 0; i < map.size(); ++i) {
+					for (int j = 0; j < map[i].size(); ++j) {
+						map[i][j] = 0;
 					}
 				}
-				if (isTracking) {
-					//cout << "計測中:";
-					//cout << strvec.at(2) << endl;
-					sensor[i].nAdd(stoi(strvec.at(3)), stoi(strvec.at(4)));
 
-					if (i < 18) {
-						i++;
-					}
-					else {//１周期終了，マップ更新
-						//cout << "動作中！！" << endl;
-						for (int id = 0; id < 19; id++) {
-							for (int h = 0; h < height; h++) {
-								for (int w = 0; w < width; w++) {//mapに書き込む
-									map[h][w] += in[id][h][w] * sensor[id].GetnIn();
-									map[h][w] += out[id][h][w] * sensor[id].GetnOut();
-								}
-							}
-						}
-						i = 0;
-					}
+				filename = "opendatas/";
+				filename += ttos(year, month, date);
+				filename += ".csv";
+				ifs.open(filename);	//センサID，yyyy/m/d, h:mm, in, out, in累計, out累計\n
+				if (!ifs) {
+					cout << "ファイルオープンに失敗" << filename << endl;
+					tomorrow(&year, &month, &date);
+					continue;
 				}
 				else {
-					//cout << strvec.at(2) << endl;
+					cout << "ファイルオープンに成功" << filename << endl;
+					//count++;
 				}
-			}
-			ifs.close();
-			
-			filename = "results/";
+
+				for (int i = 0; i < 19; i++) {//センサの初期化
+					sensor[i].Initialize();
+				}
+
+				while (getline(ifs, line)) {//オープンデータ内のループ
+					vector<string> strvec = split(line, ',');//データ一行ゲット
+					if (strvec.at(2) == ttos(time)) {//データの時間評価
+						isTracking = true;
+					}
+					if (isTracking) {
+						if (strvec.at(2) == ttos(time+1)) {
+							isTracking = false;
+						}
+					}
+					if (isTracking) {
+						//cout << "計測中:";
+						//cout << strvec.at(2) << endl;
+						sensor[i].nAdd(stoi(strvec.at(3)), stoi(strvec.at(4)));
+
+						if (i < 18) {
+							i++;
+						}
+						else {//１周期終了，マップ更新
+							//cout << "動作中！！" << endl;
+							for (int id = 0; id < 19; id++) {
+								for (int h = 0; h < height; h++) {
+									for (int w = 0; w < width; w++) {//mapに書き込む
+										map[h][w] += in[id][h][w] * sensor[id].GetnIn();
+										map[h][w] += out[id][h][w] * sensor[id].GetnOut();
+									}
+								}
+							}
+							i = 0;
+						}
+					}
+					else {
+						//cout << strvec.at(2) << endl;
+					}
+				}
+				ifs.close();
+
+				filename = "results/";
+				filename += to_string(range + 1);
+				filename += "/";
+				filename += ttos(year, month, date);
+				filename += ".csv";
+				ofs.open(filename, ios::trunc);
+
+				cout << "----------------------------" << endl;
+				for (int i = 0; i < map.size(); ++i) {
+					//printf("%3d ", i);
+					for (int j = 0; j < map[i].size(); ++j) {
+						//printf("%5d", map[i][j]);
+						ofs << map[i][j] << ",";
+					}
+					//printf("\n");
+					ofs << endl;
+				}
+				ofs.close();
+
+				filename = "results/ratio/";
+				//filename += to_string(range + 1);
+				//filename += "/";
+				filename += ttos(year, month, date);
+				filename += ".csv";
+				ofs.open(filename, ios::trunc);
+				for (int i = 0; i < 19; i++) {
+					ofs << sensor[i].GetID() + 1 << "," << sensor[i].GetSumnIn() << "," << sensor[i].GetSumnOut();
+					data[2 * i + 0] += sensor[i].GetSumnIn();
+					data[2 * i + 1] += sensor[i].GetSumnIn();
+					ofs << endl;
+				}
+				ofs.close();
+
+				tomorrow(&year, &month, &date);
+			}//30日終わり
+			filename = "results/pertime/";
 			filename += to_string(range + 1);
 			filename += "/";
-			filename += ttos(year, month, date);
-			filename += ".csv";
-			ofs.open(filename, ios::trunc);
-
-			cout << "----------------------------" << endl;
-			for (int i = 0; i < map.size(); ++i) {
-				//printf("%3d ", i);
-				for (int j = 0; j < map[i].size(); ++j) {
-					//printf("%5d", map[i][j]);
-					ofs << map[i][j] << ",";
-				}
-				//printf("\n");
-				ofs << endl;
-			}
-			ofs.close();
-
-			filename = "results/ratio/";
-			//filename += to_string(range + 1);
-			//filename += "/";
-			filename += ttos(year, month, date);
+			filename += ttos(time);
 			filename += ".csv";
 			ofs.open(filename, ios::trunc);
 			for (int i = 0; i < 19; i++) {
-				ofs << sensor[i].GetID() + 1 << "," << sensor[i].GetSumnIn() << "," << sensor[i].GetSumnOut();
+				ofs << i + 1 << "," << data[2 * i + 0] << "," << data[2 * i + 1];
 				ofs << endl;
 			}
+			ofs << "avg,";
+			int avg=0;
+			for (int i = 0; i < 19; i++) {
+				avg += data[2 * i + 0];
+				avg += data[2 * i + 1];
+			}
+			ofs << avg / 19 * 2;
 			ofs.close();
-			
-			tomorrow(&year, &month, &date);
-		}//30日終わり
+		}//1時間終わり
 	}//range終わり
 
 	return 0;

@@ -14,6 +14,8 @@ void tomorrow(int *y, int *m, int *d);//受け取った日付の次の日を求める
 
 string ttos(int y, int m, int d);//timeを受け取り，オープンデータに合わせてstringを返す
 
+string ttos(int time);//時刻を受け取り，オープンデータに合わせてstringを返す
+
 #endif // !DATE_H
 
 

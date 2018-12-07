@@ -46,4 +46,17 @@ string ttos(int y, int m, int d) {//timeを受け取り，オープンデータに合わせてstri
 	return result;
 }
 
+string ttos(int time) {//timeを受け取り，オープンデータに合わせてstringを返す
+	string result = "";
+	if (time < 10) {//一桁なら
+		result += "0";
+		result += to_string(time);
+	}
+	else {
+		result += to_string(time);
+	}
+	result += ":00";
+	return result;
+}
+
 //曜日を求める(ツェラーの公式)(http://www.aoharu-b.com/cgi/sk/2008/03/zellerc.html)
