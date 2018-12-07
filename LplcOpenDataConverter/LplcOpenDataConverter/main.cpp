@@ -33,6 +33,8 @@ int main(){
 	vector<vector<int>> in[19];
 	vector<vector<int>> out[19];
 
+	Sensor sensor[19];//格納データの内容を扱うクラス
+
 	bool isTracking = false;
 
 	ifstream ifs;
@@ -73,73 +75,82 @@ int main(){
 		}
 	}
 
-	Sensor sensor[19];//格納データの内容を扱うクラス
-	//int data[12][19][2 * 19 + 1];//range,id,in,out,in,out,,,avg
+	//センサ有効範囲についてのforループ
+	for (int range = 0; range < 12; range++) {
+		//各センサに有効範囲を格納(センサについてのforループ)
+		for (int i = 0; i < 19; i++) {
+			filename = "mapdatas/allmap/";
+			filename += to_string(range + 1);
+			filename += "/";
+			filename += to_string(i + 1);
+			filename += "in.csv";
 
-	for (int range = 0; range < 12; range++) {//センサ有効範囲についてのforループ
-		for (int time = 5; time < 26; time++) {
-			for (int i = 0; i < 19; i++) {//各センサに有効範囲を格納(センサについてのforループ)
-				filename = "mapdatas/allmap/";
-				filename += to_string(range + 1);
-				filename += "/";
-				filename += to_string(i + 1);
-				filename += "in.csv";
-
-				cout << filename << endl;
-				ifs.open(filename.c_str());
-				if (!ifs) {
-					cout << "ファイルオープンに失敗" << filename << endl;
-				}
-
-				int j = 0, k = 0;
-				while (getline(ifs, line)) {
-					vector<string> strvec = split(line, ',');
-					for (k = 0; k < strvec.size(); k++) {
-						if (strvec.at(k) == "") in[i][j][k] = 0;
-						else in[i][j][k] = stoi(strvec.at(k));
-					}
-					j++;
-				}
-				ifs.close();
-
-				filename = "mapdatas/allmap/";
-				filename += to_string(range + 1);
-				filename += "/";
-				filename += to_string(i + 1);
-				filename += "out.csv";
-				cout << filename << endl;
-				ifs.open(filename.c_str());
-				if (!ifs) {
-					cout << "ファイルオープンに失敗" << filename << endl;
-				}
-				j = 0; k = 0;
-				while (getline(ifs, line)) {
-					vector<string> strvec = split(line, ',');
-					for (k = 0; k < strvec.size(); k++) {
-						if (strvec.at(k) == "") out[i][j][k] = 0;
-						else out[i][j][k] = stoi(strvec.at(k));
-					}
-					j++;
-				}
-				ifs.close();
+			cout << filename << endl;
+			ifs.open(filename.c_str());
+			if (!ifs) {
+				cout << "ファイルオープンに失敗" << filename << endl;
 			}
 
-			for (int i = 0; i < map.size(); ++i) {//念のための初期化
+			int j = 0, k = 0;
+			while (getline(ifs, line)) {
+				vector<string> strvec = split(line, ',');
+				for (k = 0; k < strvec.size(); k++) {
+					if (strvec.at(k) == "") in[i][j][k] = 0;
+					else in[i][j][k] = stoi(strvec.at(k));
+				}
+				j++;
+			}
+			ifs.close();
+
+			filename = "mapdatas/allmap/";
+			filename += to_string(range + 1);
+			filename += "/";
+			filename += to_string(i + 1);
+			filename += "out.csv";
+			cout << filename << endl;
+			ifs.open(filename.c_str());
+			if (!ifs) {
+				cout << "ファイルオープンに失敗" << filename << endl;
+			}
+			j = 0; k = 0;
+			while (getline(ifs, line)) {
+				vector<string> strvec = split(line, ',');
+				for (k = 0; k < strvec.size(); k++) {
+					if (strvec.at(k) == "") out[i][j][k] = 0;
+					else out[i][j][k] = stoi(strvec.at(k));
+				}
+				j++;
+			}
+			ifs.close();
+		}
+
+		//時間ごとのループ
+		for (int time = 5; time < 24; time++) {
+			//センサ初期化
+			for (int i = 0; i < 19; i++) {
+				sensor[i].Initialize();
+			}
+
+			//マップ初期化
+			for (int i = 0; i < map.size(); ++i) {
 				for (int j = 0; j < map[i].size(); ++j) {
 					map[i][j] = 0;
 				}
 			}
 			cout << "----------------------------" << endl;
 
-			i = 0;
 			//日付初期化
 			year = 2018;
 			month = 6;
 			date = 1;
-
-			//while(year < 2017) {//日付(オープンデータ)についてのループ
 			int data[19 * 2] = { 0 };
+			//30日分のtime時をまとめて処理
 			for (int count = 0; count < 30; count++) {
+				
+				cout << range << ":";
+				cout << time << ":";
+				cout << count << ":" << endl;
+				//マップ初期化
 				for (int i = 0; i < map.size(); ++i) {
 					for (int j = 0; j < map[i].size(); ++j) {
 						map[i][j] = 0;
@@ -156,26 +167,23 @@ int main(){
 					continue;
 				}
 				else {
-					cout << "ファイルオープンに成功" << filename << endl;
+					//cout << "ファイルオープンに成功" << filename << endl;
 					//count++;
-				}
-
-				for (int i = 0; i < 19; i++) {//センサの初期化
-					sensor[i].Initialize();
 				}
 
 				while (getline(ifs, line)) {//オープンデータ内のループ
 					vector<string> strvec = split(line, ',');//データ一行ゲット
-					if (strvec.at(2) == ttos(time)) {//データの時間評価
+					if (strvec.at(2) == ttos(time,0)) {//データの時間評価
 						isTracking = true;
 					}
 					if (isTracking) {
-						if (strvec.at(2) == ttos(time+1)) {
+						if (strvec.at(2) == ttos(time+1,0)) {
 							isTracking = false;
 						}
 					}
 					if (isTracking) {
 						//cout << "計測中:";
+						
 						//cout << strvec.at(2) << endl;
 						sensor[i].nAdd(stoi(strvec.at(3)), stoi(strvec.at(4)));
 
@@ -189,6 +197,8 @@ int main(){
 									for (int w = 0; w < width; w++) {//mapに書き込む
 										map[h][w] += in[id][h][w] * sensor[id].GetnIn();
 										map[h][w] += out[id][h][w] * sensor[id].GetnOut();
+										data[id * 2 + 0] += in[id][h][w] * sensor[id].GetnIn();
+										data[id * 2 + 1] += in[id][h][w] * sensor[id].GetnOut();
 									}
 								}
 							}
@@ -201,61 +211,61 @@ int main(){
 				}
 				ifs.close();
 
-				filename = "results/";
-				filename += to_string(range + 1);
-				filename += "/";
-				filename += ttos(year, month, date);
-				filename += ".csv";
-				ofs.open(filename, ios::trunc);
-
-				cout << "----------------------------" << endl;
-				for (int i = 0; i < map.size(); ++i) {
-					//printf("%3d ", i);
-					for (int j = 0; j < map[i].size(); ++j) {
-						//printf("%5d", map[i][j]);
-						ofs << map[i][j] << ",";
-					}
-					//printf("\n");
-					ofs << endl;
-				}
-				ofs.close();
-
-				filename = "results/ratio/";
-				//filename += to_string(range + 1);
-				//filename += "/";
-				filename += ttos(year, month, date);
-				filename += ".csv";
-				ofs.open(filename, ios::trunc);
-				for (int i = 0; i < 19; i++) {
-					ofs << sensor[i].GetID() + 1 << "," << sensor[i].GetSumnIn() << "," << sensor[i].GetSumnOut();
-					data[2 * i + 0] += sensor[i].GetSumnIn();
-					data[2 * i + 1] += sensor[i].GetSumnIn();
-					ofs << endl;
-				}
-				ofs.close();
-
 				tomorrow(&year, &month, &date);
 			}//30日終わり
 			filename = "results/pertime/";
 			filename += to_string(range + 1);
 			filename += "/";
-			filename += ttos(time);
+			filename += ttos(time,1);
 			filename += ".csv";
 			ofs.open(filename, ios::trunc);
 			for (int i = 0; i < 19; i++) {
-				ofs << i + 1 << "," << data[2 * i + 0] << "," << data[2 * i + 1];
+				//ofs << i + 1 << "," << sensor[i].GetSumnIn()/30.0 << "," << sensor[i].GetSumnOut()/30.0;
+				ofs << i + 1 << "," << data[i * 2 + 0] / 30.0 << "," << data[i * 2 + 1] / 30.0;
 				ofs << endl;
 			}
 			ofs << "avg,";
-			int avg=0;
-			for (int i = 0; i < 19; i++) {
-				avg += data[2 * i + 0];
-				avg += data[2 * i + 1];
+			double avg = 0;
+			for (int i = 0; i < 19*2; i++) {
+				avg += data[i];
 			}
-			ofs << avg / 19 * 2;
+			ofs << avg / (19.0 * 2.0 * 30.0);
 			ofs.close();
 		}//1時間終わり
 	}//range終わり
 
 	return 0;
 }
+
+
+
+//filename = "results/";
+//filename += to_string(range + 1);
+//filename += "/";
+//filename += ttos(year, month, date);
+//filename += ".csv";
+//ofs.open(filename, ios::trunc);
+
+//cout << "----------------------------" << endl;
+//for (int i = 0; i < map.size(); ++i) {
+//	//printf("%3d ", i);
+//	for (int j = 0; j < map[i].size(); ++j) {
+//		//printf("%5d", map[i][j]);
+//		ofs << map[i][j] << ",";
+//	}
+//	//printf("\n");
+//	ofs << endl;
+//}
+//ofs.close();
+
+//filename = "results/ratio/";
+////filename += to_string(range + 1);
+////filename += "/";
+//filename += ttos(year, month, date);
+//filename += ".csv";
+//ofs.open(filename, ios::trunc);
+//for (int i = 0; i < 19; i++) {//センサのループ
+//	//ofs << sensor[i].GetID() + 1 << "," << sensor[i].GetSumnIn() << "," << sensor[i].GetSumnOut();
+//	//ofs << endl;
+//}
+//ofs.close();

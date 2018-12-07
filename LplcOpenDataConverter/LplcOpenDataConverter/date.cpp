@@ -46,7 +46,7 @@ string ttos(int y, int m, int d) {//timeを受け取り，オープンデータに合わせてstri
 	return result;
 }
 
-string ttos(int time) {//timeを受け取り，オープンデータに合わせてstringを返す
+string ttos(int time,bool isfilename) {//timeを受け取り，オープンデータに合わせてstringを返す
 	string result = "";
 	if (time < 10) {//一桁なら
 		result += "0";
@@ -55,7 +55,13 @@ string ttos(int time) {//timeを受け取り，オープンデータに合わせてstringを返す
 	else {
 		result += to_string(time);
 	}
-	result += ":00";
+	if (isfilename) {
+		result += "_00";
+	}
+	else {
+		result += ":00";
+	}
+	
 	return result;
 }
 
