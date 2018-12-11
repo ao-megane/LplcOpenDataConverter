@@ -66,3 +66,11 @@ string ttos(int time,bool isfilename) {//time‚ğó‚¯æ‚èCƒI[ƒvƒ“ƒf[ƒ^‚É‡‚í‚¹‚
 }
 
 //—j“ú‚ğ‹‚ß‚é(ƒcƒFƒ‰[‚ÌŒö®)(http://www.aoharu-b.com/cgi/sk/2008/03/zellerc.html)
+int aaa(int y, int m, int d) {
+	if (m < 3) {
+		y--;
+		m += 12;
+	}
+	return (y + y / 4 - y / 100 + y / 400 + (13 * m + 8) / 5 + d) % 7;
+	//“úŒ‰Î…–Ø‹à“y‚Ì‡(0~6)
+}

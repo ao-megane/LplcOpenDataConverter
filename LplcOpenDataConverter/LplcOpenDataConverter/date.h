@@ -16,6 +16,8 @@ string ttos(int y, int m, int d);//timeを受け取り，オープンデータに合わせてstrin
 
 string ttos(int time,bool isfilename);//時刻を受け取り，オープンデータに合わせてstringを返す
 
+int aaa(int y, int m, int d);
+
 #endif // !DATE_H
 
 
