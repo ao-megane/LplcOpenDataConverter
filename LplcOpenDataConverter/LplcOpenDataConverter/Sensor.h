@@ -1,9 +1,11 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
+#include <iostream>
 #include <string>
 #include <sstream>
 #include <vector>
+#include <iomanip>
 
 using namespace std;
 
