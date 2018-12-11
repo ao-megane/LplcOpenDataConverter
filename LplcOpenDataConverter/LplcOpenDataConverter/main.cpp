@@ -202,7 +202,7 @@ int main(){
 										map[h][w] += in[id][h][w] * sensor[id].GetnIn();
 										map[h][w] += out[id][h][w] * sensor[id].GetnOut();
 										data[id * 2 + 0] += in[id][h][w] * sensor[id].GetnIn();
-										data[id * 2 + 1] += in[id][h][w] * sensor[id].GetnOut();
+										data[id * 2 + 1] += out[id][h][w] * sensor[id].GetnOut();
 									}
 								}
 							}
