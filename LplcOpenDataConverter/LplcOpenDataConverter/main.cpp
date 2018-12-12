@@ -146,11 +146,11 @@ int main(){
 			int data[19 * 2] = { 0 };
 			//30“ú•ª‚Ìtime‚ğ‚Ü‚Æ‚ß‚Äˆ—
 			for (int count = 0; count < 30; count++) {
-				if (aaa(year, month, date) == 0 || aaa(year, month, date) == 6) {
+				/*if (aaa(year, month, date) == 0 || aaa(year, month, date) == 6) {
 					cout << "‹x“ú" << ttos(year, month, date) << endl;
 					tomorrow(&year, &month, &date);
 					continue;
-				}
+				}*/
 				cout << range << ":";
 				cout << time << ":";
 				cout << count << ":" << endl;
