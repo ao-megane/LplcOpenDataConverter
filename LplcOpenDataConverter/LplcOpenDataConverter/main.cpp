@@ -37,6 +37,9 @@ int main(){
 
 	bool isTracking = false;
 
+	int workdaynum = 21;//2018/6の平日の日数
+	int holidaynum = 9;
+
 	ifstream ifs;
 	ofstream ofs;
 	ifs.open("mapdatas/allmap/map.txt");	//マップの広さとか
@@ -76,7 +79,23 @@ int main(){
 	}
 
 	//センサ有効範囲についてのforループ
-	for (int range = 0; range < 12; range++) {
+	//for (int range = 0; range < 12; range++) {
+	int range = 0;
+	for(int t=0;t<3;t++){
+		switch (t)
+		{
+		case 0:
+			range = 0;
+			break;
+		case 1:
+			range = 5;
+			break;
+		case 2:
+			range = 11;
+			break;
+		default:
+			break;
+		}
 		//各センサに有効範囲を格納(センサについてのforループ)
 		for (int i = 0; i < 19; i++) {
 			filename = "mapdatas/allmap/";
@@ -146,11 +165,16 @@ int main(){
 			int data[19 * 2] = { 0 };
 			//30日分のtime時をまとめて処理
 			for (int count = 0; count < 30; count++) {
-				/*if (aaa(year, month, date) == 0 || aaa(year, month, date) == 6) {
-					cout << "休日" << ttos(year, month, date) << endl;
+				if (aaa(year, month, date) == 0 || aaa(year, month, date) == 6) {
+					/*cout << "休日(カウントしない)" << ttos(year, month, date) << endl;
+					tomorrow(&year, &month, &date);
+					continue;*/
+				}
+				else {
+					cout << "平日(カウントしない)" << ttos(year, month, date) << endl;
 					tomorrow(&year, &month, &date);
 					continue;
-				}*/
+				}
 				cout << range << ":";
 				cout << time << ":";
 				cout << count << ":" << endl;
@@ -190,12 +214,20 @@ int main(){
 						
 						//cout << strvec.at(2) << endl;
 						sensor[i].nAdd(stoi(strvec.at(3)), stoi(strvec.at(4)));
+						
+						if (i == 13) {
+							if (stoi(strvec.at(3)) != 0 || stoi(strvec.at(4)) != 0) {
+								int a;
+								scanf_s("%d", &a);
+							}
+						}
 
 						if (i < 18) {
 							i++;
 						}
 						else {//１周期終了，マップ更新
 							//cout << "動作中！！" << endl;
+							//cout << sensor[14].GetAllData() << endl;
 							for (int id = 0; id < 19; id++) {
 								for (int h = 0; h < height; h++) {
 									for (int w = 0; w < width; w++) {//mapに書き込む
@@ -205,6 +237,7 @@ int main(){
 										data[id * 2 + 1] += out[id][h][w] * sensor[id].GetnOut();
 									}
 								}
+								//cout << id + 1 << ":" << sensor[id].GetAllData() << endl;
 							}
 							i = 0;
 						}
@@ -225,7 +258,8 @@ int main(){
 			ofs.open(filename, ios::trunc);
 			for (int i = 0; i < 19; i++) {
 				//ofs << i + 1 << "," << sensor[i].GetSumnIn()/30.0 << "," << sensor[i].GetSumnOut()/30.0;
-				ofs << i + 1 << "," << data[i * 2 + 0] / 30.0 << "," << data[i * 2 + 1] / 30.0;
+				//ofs << i + 1 << "," << (data[i * 2 + 0] + data[i * 2 + 1]) / workdaynum;
+				ofs << i + 1 << "," << (data[i * 2 + 0] + data[i * 2 + 1]) / holidaynum;
 				ofs << endl;
 			}
 			ofs << "avg,";
@@ -233,7 +267,8 @@ int main(){
 			for (int i = 0; i < 19*2; i++) {
 				avg += data[i];
 			}
-			ofs << avg / (19.0 * 2.0 * 30.0);
+			//ofs << avg / (19.0 * workdaynum);
+			ofs << avg / (19.0 * holidaynum);
 			ofs.close();
 		}//1時間終わり
 	}//range終わり

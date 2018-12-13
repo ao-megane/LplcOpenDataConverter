@@ -66,3 +66,6 @@ int Sensor::GetSumnOut() {
 double Sensor::GetRatio() {//不要なプライバシデータ流出比率
 	return (sumnIn + sumnOut) / (sumnIn + sumnOut + sumpIn + sumpOut);
 }
+int Sensor::GetAllData() {
+	return (sumnIn + sumnOut + sumpIn + sumpOut);
+}

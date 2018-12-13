@@ -21,6 +21,7 @@ public:
 	int GetSumnIn();
 	int GetSumnOut();
 	double GetRatio();
+	int GetAllData();
 	~Sensor();
 
 private:
