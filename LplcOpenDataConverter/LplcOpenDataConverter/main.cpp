@@ -86,7 +86,7 @@ int main(){
 
 	//posファイル読み込み&格納
 	filename = "mapdatas/allmap/pos/pos.csv";
-	cout << filename << endl;
+	//cout << filename << endl;
 	ifs.open(filename.c_str());
 	if (!ifs) {
 		cout << "ファイルオープンに失敗" << filename << endl;
@@ -112,7 +112,7 @@ int main(){
 			filename += to_string(i + 1);
 			filename += "in.csv";
 
-			cout << filename << endl;
+			//cout << filename << endl;
 			ifs.open(filename.c_str());
 			if (!ifs) {
 				cout << "ファイルオープンに失敗" << filename << endl;
@@ -134,7 +134,7 @@ int main(){
 			filename += "/";
 			filename += to_string(i + 1);
 			filename += "out.csv";
-			cout << filename << endl;
+			//cout << filename << endl;
 			ifs.open(filename.c_str());
 			if (!ifs) {
 				cout << "ファイルオープンに失敗" << filename << endl;
@@ -264,7 +264,7 @@ int main(){
 		}
 		ofs.close();
 
-		cout << "対象者出力終わり" << endl;
+		cout << range+1 << ":対象者出力終わり" << endl;
 
 		filename = "results/test.csv";
 		ofs.open(filename, ios::trunc);		
@@ -282,8 +282,8 @@ int main(){
 
 	}//range終わり
 
-	//int decoi;
-	//scanf_s("%d", &decoi);
+	int decoi;
+	scanf_s("%d", &decoi);
 
 	return 0;
 }
