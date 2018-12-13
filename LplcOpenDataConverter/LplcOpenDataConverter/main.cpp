@@ -6,6 +6,7 @@
 #include <iomanip>
 #include "Sensor.h"
 #include "date.h"
+#include "GetPosNum.h"
 
 using namespace std;
 
@@ -32,13 +33,15 @@ int main(){
 	int height = 0;
 	int posnum = 0;//実際はposnum*3人ずつ増えてる
 	vector<vector<int>> map;
-	vector<vector<int>> positive;
+	vector<vector<int>> positive[15];
 	vector<vector<int>> in[19];
 	vector<vector<int>> out[19];
 
 	Sensor sensor[19];//格納データの内容を扱うクラス
 
 	bool isTracking = false;
+
+	SetRand();
 
 	ifstream ifs;
 	ofstream ofs;
@@ -72,35 +75,96 @@ int main(){
 	height = mapdata[1];//マップの広さを格納
 
 	map.resize(height);
-	positive.resize(height);
+	for (int i = 0; i < 15; i++) {
+		positive[i].resize(height);
+	}
 	for (int i = 0; i < 19; i++) {//大きさ格納
 		in[i].resize(height);
 		out[i].resize(height);
 		for (int j = 0; j < height; j++) {
 			in[i][j].resize(width);
 			out[i][j].resize(width);
-			map[j].resize(width);
-			positive[j].resize(width);
+		}
+	}
+	for (int i = 0; i < height; i++) {
+		map[i].resize(width);
+		for (int num = 0; num < 15; num++) {
+			positive[num][i].resize(width);
 		}
 	}
 
 	//posファイル読み込み&格納
-	filename = "mapdatas/allmap/pos/pos.csv";
-	//cout << filename << endl;
-	ifs.open(filename.c_str());
-	if (!ifs) {
-		cout << "ファイルオープンに失敗" << filename << endl;
-	}
-	int j = 0, k = 0;
-	while (getline(ifs, line)) {
-		vector<string> strvec = split(line, ',');
-		for (k = 0; k < strvec.size(); k++) {
-			if (strvec.at(k) == "") positive[j][k] = 0;
-			else positive[j][k] = stoi(strvec.at(k));
+	for (int i = 0; i < 15; i++) {
+		int num = 0;
+		switch (i)
+		{
+		case 0:
+			num = 1;
+			break;
+		case 1:
+			num = 2;
+			break;
+		case 2:
+			num = 3;
+			break;
+		case 3:
+			num = 4;
+			break;
+		case 4:
+			num = 5;
+			break;
+		case 5:
+			num = 6;
+			break;
+		case 6:
+			num = 9;
+			break;
+		case 7:
+			num = 10;
+			break;
+		case 8:
+			num = 12;
+			break;
+		case 9:
+			num = 13;
+			break;
+		case 10:
+			num = 15;
+			break;
+		case 11:
+			num = 16;
+			break;
+		case 12:
+			num = 17;
+			break;
+		case 13:
+			num = 18;
+			break;
+		case 14:
+			num = 19;
+			break;
+		default:
+			break;
 		}
-		j++;
+		filename = "mapdatas/allmap/pos/";
+		filename += to_string(num);
+		filename += ".csv";
+		//cout << filename << endl;
+		ifs.open(filename.c_str());
+		if (!ifs) {
+			cout << "ファイルオープンに失敗" << filename << endl;
+		}
+		int j = 0, k = 0;
+		while (getline(ifs, line)) {
+			vector<string> strvec = split(line, ',');
+			for (k = 0; k < strvec.size(); k++) {
+				if (strvec.at(k) == "") positive[i][j][k] = 0;
+				else positive[i][j][k] = stoi(strvec.at(k));
+			}
+			j++;
+		}
+		ifs.close();
 	}
-	ifs.close();
 
 	//センサ有効範囲についてのforループ
 	for (int range = 0; range < 12; range++) {
@@ -244,10 +308,14 @@ int main(){
 		}//30日終わり
 
 		//対象者について
-		for (int i = 0; i < 19; i++) {
-			for (int h = 0; h < height; h++) {
-				for (int w = 0; w < width; w++) {
-					sensor[i].pAdd(positive[h][w] * in[i][h][w] * posnum, positive[h][w] * out[i][h][w] * posnum);
+		int num;
+		for (int t = 0; t < posnum; t++) {//人数
+			num = GetPosNum();
+			for (int id = 0; id < 19; id++) {//センサ
+				for (int h = 0; h < height; h++) {
+					for (int w = 0; w < width; w++) {
+						sensor[id].pAdd(positive[num][h][w] * in[id][h][w] * posnum, positive[num][h][w] * out[id][h][w] * posnum);
+					}
 				}
 			}
 		}
@@ -266,7 +334,7 @@ int main(){
 
 		cout << range+1 << ":対象者出力終わり" << endl;
 
-		filename = "results/test.csv";
+		/*filename = "results/test.csv";
 		ofs.open(filename, ios::trunc);		
 		for (int h = 0; h < height; h++) {
 			for (int w = 0; w < width; w++) {
@@ -278,7 +346,7 @@ int main(){
 			}
 			ofs << endl;
 		}
-		ofs.close();
+		ofs.close();*/
 
 	}//range終わり
 

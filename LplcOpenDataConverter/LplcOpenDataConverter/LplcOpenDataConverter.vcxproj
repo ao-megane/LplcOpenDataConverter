@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="date.h" />
+    <ClInclude Include="GetPosNum.h" />
     <ClInclude Include="Sensor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

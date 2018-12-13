@@ -32,5 +32,8 @@
     <ClInclude Include="date.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="GetPosNum.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
