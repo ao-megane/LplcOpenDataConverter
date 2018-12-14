@@ -31,9 +31,10 @@ int main(){
 	int i = 0;
 	int width = 0;
 	int height = 0;
-	int posnum = 0;//実際はposnum*3人ずつ増えてる
+	int posnum = 0;//対象者人数
 	vector<vector<int>> map;
-	vector<vector<int>> positive[15];
+	vector<vector<int>> decoi;
+	vector<vector<int>> positive[19];
 	vector<vector<int>> in[19];
 	vector<vector<int>> out[19];
 
@@ -75,7 +76,8 @@ int main(){
 	height = mapdata[1];//マップの広さを格納
 
 	map.resize(height);
-	for (int i = 0; i < 15; i++) {
+	decoi.resize(height);
+	for (int i = 0; i < 19; i++) {
 		positive[i].resize(height);
 	}
 	for (int i = 0; i < 19; i++) {//大きさ格納
@@ -88,86 +90,61 @@ int main(){
 	}
 	for (int i = 0; i < height; i++) {
 		map[i].resize(width);
-		for (int num = 0; num < 15; num++) {
+		decoi[i].resize(width);
+		for (int num = 0; num < 19; num++) {
 			positive[num][i].resize(width);
 		}
 	}
 
 	//posファイル読み込み&格納
-	for (int i = 0; i < 15; i++) {
-		int num = 0;
-		switch (i)
+	for (int i = 0; i < 19; i++) {
+		filename = "mapdatas/allmap/pos/";
+		filename += to_string(i+1);
+		filename += ".csv";
+		cout << filename << endl;
+		ifs.open(filename.c_str());
+		if (!ifs) {
+			cout << "ファイルオープンに失敗" << filename << endl;
+			for (int h = 0; h < height; h++) {
+				for (int w = 0; w < width; w++) {
+					positive[i][h][w] = 0;
+				}
+			}
+			continue;
+		}
+		else {
+			int j = 0, k = 0;
+			while (getline(ifs, line)) {
+				vector<string> strvec = split(line, ',');
+				for (k = 0; k < strvec.size(); k++) {
+					if (strvec.at(k) == "") positive[i][j][k] = 0;
+					else positive[i][j][k] = stoi(strvec.at(k));
+				}
+				j++;
+			}
+		}
+		ifs.close();
+		//cout << i << endl;
+	}
+	
+
+	//センサ有効範囲についてのforループ
+	int range = 0;
+	for (int t = 0; t < 3; t++) {
+		switch (t)
 		{
 		case 0:
-			num = 1;
+			range = 0;
 			break;
 		case 1:
-			num = 2;
+			range = 5;
 			break;
 		case 2:
-			num = 3;
-			break;
-		case 3:
-			num = 4;
-			break;
-		case 4:
-			num = 5;
-			break;
-		case 5:
-			num = 6;
-			break;
-		case 6:
-			num = 9;
-			break;
-		case 7:
-			num = 10;
-			break;
-		case 8:
-			num = 12;
-			break;
-		case 9:
-			num = 13;
-			break;
-		case 10:
-			num = 15;
-			break;
-		case 11:
-			num = 16;
-			break;
-		case 12:
-			num = 17;
-			break;
-		case 13:
-			num = 18;
-			break;
-		case 14:
-			num = 19;
+			range = 11;
 			break;
 		default:
 			break;
 		}
-		filename = "mapdatas/allmap/pos/";
-		filename += to_string(num);
-		filename += ".csv";
-		//cout << filename << endl;
-		ifs.open(filename.c_str());
-		if (!ifs) {
-			cout << "ファイルオープンに失敗" << filename << endl;
-		}
-		int j = 0, k = 0;
-		while (getline(ifs, line)) {
-			vector<string> strvec = split(line, ',');
-			for (k = 0; k < strvec.size(); k++) {
-				if (strvec.at(k) == "") positive[i][j][k] = 0;
-				else positive[i][j][k] = stoi(strvec.at(k));
-			}
-			j++;
-		}
-		ifs.close();
-	}
-
-	//センサ有効範囲についてのforループ
-	for (int range = 0; range < 12; range++) {
 		//各センサに有効範囲を格納(センサについてのforループ)
 		for (int i = 0; i < 19; i++) {
 			filename = "mapdatas/allmap/";
@@ -263,7 +240,7 @@ int main(){
 				//cout << "ファイルオープンに成功" << filename << endl;
 				//count++;
 			}
-
+			i = 0;
 			while (getline(ifs, line)) {//オープンデータ内のループ
 				vector<string> strvec = split(line, ',');//データ一行ゲット
 				if (strvec.at(2) == start) {//データの時間評価
@@ -278,7 +255,13 @@ int main(){
 					//cout << "計測中" << endl;
 						
 					//cout << strvec.at(2) << endl;
-					sensor[i].nAdd(stoi(strvec.at(3)), stoi(strvec.at(4)));
+					//センサ更新
+					for (int h = 0; h < height; h++) {
+						for (int w = 0; w < width; w++) {
+							sensor[i].nAdd(stoi(strvec.at(3)) * in[i][h][w], stoi(strvec.at(4))*out[i][h][w]);
+						}
+					}
+					
 
 					if (i < 18) {
 						i++;
@@ -314,7 +297,7 @@ int main(){
 			for (int id = 0; id < 19; id++) {//センサ
 				for (int h = 0; h < height; h++) {
 					for (int w = 0; w < width; w++) {
-						sensor[id].pAdd(positive[num][h][w] * in[id][h][w] * posnum, positive[num][h][w] * out[id][h][w] * posnum);
+						sensor[id].pAdd(positive[num - 1][h][w] * in[id][h][w], positive[num - 1][h][w] * out[id][h][w]);
 					}
 				}
 			}
@@ -334,24 +317,33 @@ int main(){
 
 		cout << range+1 << ":対象者出力終わり" << endl;
 
-		/*filename = "results/test.csv";
-		ofs.open(filename, ios::trunc);		
-		for (int h = 0; h < height; h++) {
-			for (int w = 0; w < width; w++) {
-				int a = 0;
-				for (int id = 0; id < 19; id++) {
-					a += positive[h][w] * in[id][h][w] * posnum + positive[h][w] * out[id][h][w] * posnum;
-				}
-				ofs << a << ",";
-			}
-			ofs << endl;
-		}
-		ofs.close();*/
-
 	}//range終わり
 
-	int decoi;
-	scanf_s("%d", &decoi);
+	//デバッグ用
+	//int num;
+	//for (int i = 0; i < posnum; i++) {
+	//	num = GetPosNum();
+	//	//テスト用
+	//	for (int h = 0; h < height; h++) {
+	//		for (int w = 0; w < width; w++) {
+	//			decoi[h][w] += positive[num-1][h][w];
+	//		}
+	//	}
+	//	cout << num << endl;
+	//}
+
+	//filename = "results/test.csv";
+	//ofs.open(filename, ios::trunc);
+	//for (int h = 0; h < height; h++) {
+	//	for (int w = 0; w < width; w++) {
+	//		ofs << decoi[h][w] << ",";
+	//	}
+	//	ofs << endl;
+	//}
+	//ofs.close();
+
+	int a;
+	scanf_s("%d", &a);
 
 	return 0;
 }

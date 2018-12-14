@@ -14,7 +14,7 @@ int GetRand() {
 	return rand() % 100;
 }
 
-int GetPosNum() {
+int GetPosNum() {//1ƒx[ƒX‚ğ•Ô‚·
 	int a = GetRand();
 	if (a < 5) {
 		return 6;
