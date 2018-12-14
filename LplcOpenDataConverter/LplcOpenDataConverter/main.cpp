@@ -31,7 +31,7 @@ int main(){
 	int i = 0;
 	int width = 0;
 	int height = 0;
-	int posnum = 0;//対象者人数
+	//int posnum = 0;//対象者人数
 	vector<vector<int>> map;
 	vector<vector<int>> decoi;
 	vector<vector<int>> positive[19];
@@ -67,10 +67,11 @@ int main(){
 		vector<string> strvec = split(line, ',');
 		end = strvec.at(0);
 	}
-	if (getline(ifs, line)) {
+	/*if (getline(ifs, line)) {
 		vector<string> strvec = split(line, ',');
 		posnum = stoi(strvec.at(0));
 	}
+	*/
 	ifs.close();
 	width = mapdata[0];
 	height = mapdata[1];//マップの広さを格納
@@ -130,8 +131,8 @@ int main(){
 
 	//センサ有効範囲についてのforループ
 	int range = 0;
-	for (int t = 0; t < 3; t++) {
-		switch (t)
+	for (int t = 0; t < 1; t++) {
+		/*switch (t)
 		{
 		case 0:
 			range = 0;
@@ -144,7 +145,8 @@ int main(){
 			break;
 		default:
 			break;
-		}
+		}*/
+		range = 11;
 		//各センサに有効範囲を格納(センサについてのforループ)
 		for (int i = 0; i < 19; i++) {
 			filename = "mapdatas/allmap/";
@@ -291,32 +293,38 @@ int main(){
 		}//30日終わり
 
 		//対象者について
-		int num;
-		for (int t = 0; t < posnum; t++) {//人数
-			num = GetPosNum();
-			for (int id = 0; id < 19; id++) {//センサ
-				for (int h = 0; h < height; h++) {
-					for (int w = 0; w < width; w++) {
-						sensor[id].pAdd(positive[num - 1][h][w] * in[id][h][w], positive[num - 1][h][w] * out[id][h][w]);
+		for (int posnum = 100; posnum <= 1000; posnum += 100) {
+			int num;
+			for (int i = 0; i < 30; i++) {//30倍回して
+				for (int t = 0; t < posnum; t++) {//人数
+					num = GetPosNum();
+					for (int id = 0; id < 19; id++) {//センサ
+						for (int h = 0; h < height; h++) {
+							for (int w = 0; w < width; w++) {
+								sensor[id].pAdd(positive[num - 1][h][w] * in[id][h][w], positive[num - 1][h][w] * out[id][h][w]);
+							}
+						}
 					}
 				}
 			}
+			for (int id = 0; id < 19; id++) {//平均にする
+				sensor[id].pDivision(30.0);
+			}
+
+			filename = "results/add_positive/";
+			filename += to_string(posnum);
+			filename += ".csv";
+			ofs.open(filename, ios::trunc);
+			//ofs.setf(ios_base::fixed, ios_base::floatfield);
+			for (int i = 0; i < 19; i++) {
+				//ofs << i + 1 << "," << sensor[i].GetSumnIn()/30.0 << "," << sensor[i].GetSumnOut()/30.0;
+				ofs << i + 1 << ",";
+				ofs << fixed << setprecision(5) << (double)sensor[i].GetRatio() << endl;
+			}
+			ofs.close();
+
+			cout << posnum<< ":対象者出力終わり" << endl;
 		}
-
-		filename = "results/add_positive/";
-		filename += to_string(range + 1);
-		filename += ".csv";
-		ofs.open(filename, ios::trunc);
-		//ofs.setf(ios_base::fixed, ios_base::floatfield);
-		for (int i = 0; i < 19; i++) {
-			//ofs << i + 1 << "," << sensor[i].GetSumnIn()/30.0 << "," << sensor[i].GetSumnOut()/30.0;
-			ofs << i + 1 << ",";
-			ofs << fixed << setprecision(5) << (double)sensor[i].GetRatio() << endl;
-		}
-		ofs.close();
-
-		cout << range+1 << ":対象者出力終わり" << endl;
-
 	}//range終わり
 
 	//デバッグ用

@@ -48,6 +48,11 @@ int Sensor::pAdd(int indata, int outdata) {
 	sumpOut += pout;
 	return 0;
 }
+int Sensor::pDivision(double a) {
+	sumpIn /= a;
+	sumpOut /= a;
+	return 0;
+}
 int Sensor::GetID() {
 	return ID;
 }

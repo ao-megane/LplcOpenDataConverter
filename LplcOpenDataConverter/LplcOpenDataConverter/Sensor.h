@@ -17,6 +17,7 @@ public:
 	int Initialize();
 	int nAdd(int in, int out);
 	int pAdd(int in, int out);
+	int pDivision(double a);
 	int GetID();
 	int GetnIn();
 	int GetnOut();
