@@ -42,6 +42,9 @@ int main(){
 
 	bool isTracking = false;
 
+	int holidaynum = 9;
+	int workdaynum = 21;
+
 	SetRand();
 
 	ifstream ifs;
@@ -127,25 +130,10 @@ int main(){
 		ifs.close();
 		//cout << i << endl;
 	}
-	
 
 	//センサ有効範囲についてのforループ
 	int range = 0;
 	for (int t = 0; t < 1; t++) {
-		/*switch (t)
-		{
-		case 0:
-			range = 0;
-			break;
-		case 1:
-			range = 5;
-			break;
-		case 2:
-			range = 11;
-			break;
-		default:
-			break;
-		}*/
 		range = 11;
 		//各センサに有効範囲を格納(センサについてのforループ)
 		for (int i = 0; i < 19; i++) {
@@ -215,7 +203,12 @@ int main(){
 		//30日分のtime時をまとめて処理
 		for (int count = 0; count < 30; count++) {
 			if (aaa(year, month, date) == 0 || aaa(year, month, date) == 6) {
-				//cout << "休日" << ttos(year, month, date) << endl;
+				//cout << "休日(カウントしない)" << ttos(year, month, date) << endl;
+				tomorrow(&year, &month, &date);
+				continue;
+			}
+			else {
+				//cout << "平日(カウントしない)" << ttos(year, month, date) << endl;
 				tomorrow(&year, &month, &date);
 				continue;
 			}
