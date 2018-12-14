@@ -68,6 +68,12 @@ int Sensor::GetSumnIn() {
 int Sensor::GetSumnOut() {
 	return sumnOut;
 }
+int Sensor::GetSumpIn() {
+	return sumpIn;
+}
+int Sensor::GetSumpOut() {
+	return sumpOut;
+}
 double Sensor::GetRatio() {//不要なプライバシデータ流出比率
 	std::cout << ID+1 << "_RATIO：" << sumnIn + sumnOut << "/" << sumnIn + sumnOut + sumpIn + sumpOut << endl;
 	if (sumnIn + sumnOut + sumpIn + sumpOut == 0) {

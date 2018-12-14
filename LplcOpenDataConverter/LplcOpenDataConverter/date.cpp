@@ -28,7 +28,7 @@ void tomorrow(int *y, int *m, int *d){
 string ttos(int y, int m, int d) {//timeを受け取り，オープンデータに合わせてstringを返す
 	string result = "";
 	result += to_string(y);
-	if (m < 10) {//一桁なら
+	if (m < 10) {//一桁ならttos
 		result += "0";
 		result += to_string(m);
 	}

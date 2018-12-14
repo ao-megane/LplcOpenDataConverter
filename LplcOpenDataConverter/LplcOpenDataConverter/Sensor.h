@@ -23,6 +23,8 @@ public:
 	int GetnOut();
 	int GetSumnIn();
 	int GetSumnOut();
+	int GetSumpIn();
+	int GetSumpOut();
 	double GetRatio();
 	~Sensor();
 
