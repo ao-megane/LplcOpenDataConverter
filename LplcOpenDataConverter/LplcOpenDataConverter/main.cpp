@@ -29,6 +29,7 @@ int main(){
 	int i = 0;
 	int width = 0;
 	int height = 0;
+	int sum[30] = {0};
 	vector<vector<int>> map;
 	vector<vector<int>> in[19];
 	vector<vector<int>> out[19];
@@ -81,17 +82,17 @@ int main(){
 	//センサ有効範囲についてのforループ
 	//for (int range = 0; range < 12; range++) {
 	int range = 0;
-	for(int t=0;t<3;t++){
+	for(int t=0;t<1;t++){
 		switch (t)
 		{
 		case 0:
 			range = 0;
 			break;
 		case 1:
-			range = 5;
+			//range = 5;
 			break;
 		case 2:
-			range = 11;
+			//range = 11;
 			break;
 		default:
 			break;
@@ -214,13 +215,6 @@ int main(){
 						
 						//cout << strvec.at(2) << endl;
 						sensor[i].nAdd(stoi(strvec.at(3)), stoi(strvec.at(4)));
-						
-						if (i == 13) {
-							if (stoi(strvec.at(3)) != 0 || stoi(strvec.at(4)) != 0) {
-								int a;
-								scanf_s("%d", &a);
-							}
-						}
 
 						if (i < 18) {
 							i++;
@@ -250,28 +244,37 @@ int main(){
 
 				tomorrow(&year, &month, &date);
 			}//30日終わり
-			filename = "results/pertime/";
-			filename += to_string(range + 1);
-			filename += "/";
-			filename += ttos(time,1);
-			filename += ".csv";
-			ofs.open(filename, ios::trunc);
-			for (int i = 0; i < 19; i++) {
-				//ofs << i + 1 << "," << sensor[i].GetSumnIn()/30.0 << "," << sensor[i].GetSumnOut()/30.0;
-				//ofs << i + 1 << "," << (data[i * 2 + 0] + data[i * 2 + 1]) / workdaynum;
-				ofs << i + 1 << "," << (data[i * 2 + 0] + data[i * 2 + 1]) / holidaynum;
-				ofs << endl;
+			
+			for (int h = 0; h < height; h++) {
+				for (int w = 0; w < width; w++) {//mapから書き込む
+					sum[time] += map[h][w];
+				}
 			}
-			ofs << "avg,";
-			double avg = 0;
-			for (int i = 0; i < 19*2; i++) {
-				avg += data[i];
-			}
-			//ofs << avg / (19.0 * workdaynum);
-			ofs << avg / (19.0 * holidaynum);
-			ofs.close();
+			
+			//ofs.open(filename, ios::trunc);
+			//for (int i = 0; i < 19; i++) {
+			//	//ofs << i + 1 << "," << sensor[i].GetSumnIn()/30.0 << "," << sensor[i].GetSumnOut()/30.0;
+			//	//ofs << i + 1 << "," << (data[i * 2 + 0] + data[i * 2 + 1]) / workdaynum;
+			//	ofs << i + 1 << "," << (data[i * 2 + 0] + data[i * 2 + 1]) / holidaynum;
+			//	ofs << endl;
+			//}
+			//ofs << "avg,";
+			//double avg = 0;
+			//for (int i = 0; i < 19*2; i++) {
+			//	avg += data[i];
+			//}
+			////ofs << avg / (19.0 * workdaynum);
+			//ofs << avg / (19.0 * holidaynum);
+			//ofs.close();
 		}//1時間終わり
 	}//range終わり
+
+	filename = "results/pertime/result.csv";
+	ofs.open(filename, ios::trunc);
+	for (int i = 0; i < 30; i++) {
+		ofs << i << "," << sum[i] << endl;
+	}
+	ofs.close();
 
 	return 0;
 }
