@@ -15,6 +15,7 @@ public:
 	Sensor();
 	//int Set(int x, int y);
 	int Initialize();
+	int pInitialize();
 	int nAdd(int in, int out);
 	int pAdd(int in, int out);
 	int pDivision(double a);
@@ -23,6 +24,8 @@ public:
 	int GetnOut();
 	int GetSumnIn();
 	int GetSumnOut();
+	int GetSumpIn();
+	int GetSumpOut();
 	double GetRatio();
 	~Sensor();
 

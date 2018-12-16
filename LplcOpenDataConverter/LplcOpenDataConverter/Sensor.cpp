@@ -34,6 +34,13 @@ int Sensor::Initialize() {
 	sumnOut = 0;
 	return 0;
 }
+int Sensor::pInitialize() {
+	pin = 0;
+	pout = 0;
+	sumpIn = 0;
+	sumpOut = 0;
+	return 0;
+}
 int Sensor::nAdd(int indata, int outdata) {
 	nin = indata;
 	nout = outdata;
@@ -67,6 +74,12 @@ int Sensor::GetSumnIn() {
 }
 int Sensor::GetSumnOut() {
 	return sumnOut;
+}
+int Sensor::GetSumpIn() {
+	return sumpIn;
+}
+int Sensor::GetSumpOut() {
+	return sumpOut;
 }
 double Sensor::GetRatio() {//不要なプライバシデータ流出比率
 	std::cout << ID+1 << "_RATIO：" << sumnIn + sumnOut << "/" << sumnIn + sumnOut + sumpIn + sumpOut << endl;
