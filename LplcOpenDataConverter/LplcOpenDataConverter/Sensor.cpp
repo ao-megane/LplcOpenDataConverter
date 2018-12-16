@@ -34,6 +34,13 @@ int Sensor::Initialize() {
 	sumnOut = 0;
 	return 0;
 }
+int Sensor::Initialize() {
+	pin = 0;
+	pout = 0;
+	sumpIn = 0;
+	sumpOut = 0;
+	return 0;
+}
 int Sensor::nAdd(int indata, int outdata) {
 	nin = indata;
 	nout = outdata;

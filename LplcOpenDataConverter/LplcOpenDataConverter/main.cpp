@@ -295,7 +295,8 @@ int main(){
 
 			//‘ÎÛÒ‚É‚Â‚¢‚Ä
 			//for (int posnum = 100; posnum <= 1000; posnum += 100) {
-				int posnum = 1000;
+				//int posnum = 1000;	//•½“ú‚ÅŠ„‚ç‚ê‚é‚Ì‚ÅCÀ¿50l‚­‚ç‚¢
+				int posnum = workdaynum * 100;
 				int num;
 				for (int i = 0; i < 30; i++) {//30”{‰ñ‚µ‚Ä
 					for (int t = 0; t < posnum; t++) {//l”
