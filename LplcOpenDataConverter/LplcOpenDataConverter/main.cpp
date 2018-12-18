@@ -330,7 +330,7 @@ int main(){
 		//}
 
 		//デバッグ
-		int posnum = 100;
+		int posnum = 200;
 		int num;
 		for (int i = 0; i < 19; i++) {
 			sensor[i].pInitialize();
