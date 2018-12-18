@@ -216,6 +216,7 @@ int main(){
 		date = 1;
 		int data[19 * 2] = { 0 };
 		//30日分のtime時をまとめて処理
+		/*
 		for (int count = 0; count < 30; count++) {
 			if (aaa(year, month, date) == 0 || aaa(year, month, date) == 6) {
 				cout << "休日(カウントしない)" << ttos(year, month, date) << endl;
@@ -294,39 +295,63 @@ int main(){
 
 			tomorrow(&year, &month, &date);
 		}//30日終わり
-
+		*/
 		
 
 		//対象者について
-		for (int posnum = 0; posnum <= 100; posnum += 10) {
-			int num;
-			for (int i = 0; i < 19; i++) {
-				sensor[i].pInitialize();
-			}
-			for (int i = 0; i < 30; i++) {//30倍回して
-				for (int t = 0; t < posnum*workdaynum; t++) {//人数
-					num = GetPosNum();
-					for (int id = 0; id < 19; id++) {//センサ
-						for (int h = 0; h < height; h++) {
-							for (int w = 0; w < width; w++) {
-								sensor[id].pAdd(positive[num - 1][h][w] * in[id][h][w], positive[num - 1][h][w] * out[id][h][w]);
-							}
+		//for (int posnum = 0; posnum <= 100; posnum += 10) {
+		//	int num;
+		//	for (int i = 0; i < 19; i++) {
+		//		sensor[i].pInitialize();
+		//	}
+		//	for (int i = 0; i < 30; i++) {//30倍回して
+		//		for (int t = 0; t < posnum*workdaynum; t++) {//人数
+		//			num = GetPosNum();
+		//			for (int id = 0; id < 19; id++) {//センサ
+		//				for (int h = 0; h < height; h++) {
+		//					for (int w = 0; w < width; w++) {
+		//						sensor[id].pAdd(positive[num - 1][h][w] * in[id][h][w], positive[num - 1][h][w] * out[id][h][w]);
+		//					}
+		//				}
+		//			}
+		//		}
+		//	}
+		//	for (int id = 0; id < 19; id++) {//平均にする
+		//		sensor[id].pDivision(30.0);
+		//	}
+		//	int posdata = 0;
+		//	int negdata = 0;
+		//	for (int id = 0; id < 19; id++) {
+		//		negdata += sensor[id].GetSumnIn() + sensor[id].GetSumnOut();
+		//		posdata += sensor[id].GetSumpIn() + sensor[id].GetSumpOut();
+		//	}
+		//	ratio[posnum / 10] = (double)(negdata) / (negdata + posdata);
+
+		//	cout << posnum<< ":対象者出力終わり" << endl;
+		//}
+
+		//デバッグ
+		int posnum = 100;
+		int num;
+		for (int i = 0; i < 19; i++) {
+			sensor[i].pInitialize();
+		}
+		for (int i = 0; i < 30; i++) {//30倍回して
+			for (int t = 0; t < posnum; t++) {//人数
+				num = GetPosNum();
+				for (int id = 0; id < 19; id++) {
+					for (int h = 0; h < height; h++) {
+						for (int w = 0; w < width; w++) {
+							map[h][w] += positive[num - 1][h][w] * in[id][h][w] + positive[num - 1][h][w] * out[id][h][w];
 						}
 					}
 				}
 			}
-			for (int id = 0; id < 19; id++) {//平均にする
-				sensor[id].pDivision(30.0);
+		}
+		for (int h = 0; h < height; h++) {
+			for (int w = 0; w < width; w++) {
+				map[h][w] /= 30.0;
 			}
-			int posdata = 0;
-			int negdata = 0;
-			for (int id = 0; id < 19; id++) {
-				negdata += sensor[id].GetSumnIn() + sensor[id].GetSumnOut();
-				posdata += sensor[id].GetSumpIn() + sensor[id].GetSumpOut();
-			}
-			ratio[posnum / 10] = (double)(negdata) / (negdata + posdata);
-
-			cout << posnum<< ":対象者出力終わり" << endl;
 		}
 	}//range終わり
 
@@ -335,10 +360,11 @@ int main(){
 	filename += ".csv";
 	ofs.open(filename, ios::trunc);
 	//ofs.setf(ios_base::fixed, ios_base::floatfield);
-	for (int i = 0; i <= 10; i++) {
-		//ofs << i + 1 << "," << sensor[i].GetSumnIn()/30.0 << "," << sensor[i].GetSumnOut()/30.0;
-		ofs << i << ",";
-		ofs << fixed << setprecision(5) << (double)ratio[i] << endl;
+	for (int h = 0; h < height; h++) {
+		for (int w = 0; w < width; w++) {
+			ofs << map[h][w] << ",";
+		}
+		ofs << endl;
 	}
 	ofs.close();
 
