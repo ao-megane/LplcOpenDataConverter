@@ -304,12 +304,12 @@ int main(){
 						for (int id = 0; id < 19; id++) {//センサ全部でチェック
 							for (int h = 0; h < height; h++) {
 								for (int w = 0; w < width; w++) {
-									if (id != 9 && id != 11) {
-										sensor[id].pAdd(positive[num - 1][h][w] * in[id][h][w], 0);
+									if (id == 9 || id == 11) {
+										sensor[id].pAdd(0, positive[num - 1][h][w] * out[id][h][w]);
 										continue;
 									}
-									if (id != 7 && id != 13) {
-										sensor[id].pAdd(0, positive[num - 1][h][w] * out[id][h][w]);
+									if (id == 7 || id == 13) {
+										sensor[id].pAdd(positive[num - 1][h][w] * in[id][h][w], 0);
 										continue;
 									}
 									sensor[id].pAdd(positive[num - 1][h][w] * in[id][h][w], positive[num - 1][h][w] * out[id][h][w]);
