@@ -267,7 +267,6 @@ int main(){
 							sensor[i].nAdd(stoi(strvec.at(3)) * in[i][h][w], stoi(strvec.at(4))*out[i][h][w]);
 						}
 					}
-					
 
 					if (i < 18) {
 						i++;
@@ -342,7 +341,12 @@ int main(){
 				for (int id = 0; id < 19; id++) {
 					for (int h = 0; h < height; h++) {
 						for (int w = 0; w < width; w++) {
-							map[h][w] += positive[num - 1][h][w] * in[id][h][w] + positive[num - 1][h][w] * out[id][h][w];
+							if (id != 9 && id != 11) {
+								map[h][w] += positive[num - 1][h][w] * in[id][h][w];
+							}
+							if (id != 7 && id != 13) {
+								map[h][w] += positive[num - 1][h][w] * out[id][h][w];
+							}
 						}
 					}
 				}
