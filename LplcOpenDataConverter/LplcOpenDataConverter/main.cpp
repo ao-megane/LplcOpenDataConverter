@@ -133,9 +133,9 @@ int main(){
 	}
 
 	//センサ有効範囲についてのforループ
-	int range = 0;
+	int range = 11;
 	for (int t = 0; t < 1; t++) {
-		range = 0;
+		range = 11;
 		//各センサに有効範囲を格納(センサについてのforループ)
 		for (int i = 0; i < 19; i++) {
 			filename = "mapdatas/allmap/";
