@@ -34,7 +34,7 @@ int Sensor::Initialize() {
 	sumnOut = 0;
 	return 0;
 }
-int Sensor::Initialize() {
+int Sensor::pInitialize() {
 	pin = 0;
 	pout = 0;
 	sumpIn = 0;

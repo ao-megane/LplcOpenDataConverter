@@ -296,7 +296,7 @@ int main(){
 			//対象者について
 			//for (int posnum = 100; posnum <= 1000; posnum += 100) {
 				//int posnum = 1000;	//平日で割られるので，実質50人くらい
-				int posnum = workdaynum * 100;
+				int posnum = workdaynum * 200;
 				int num;
 				for (int i = 0; i < 30; i++) {//30倍回して
 					for (int t = 0; t < posnum; t++) {//人数
@@ -304,6 +304,14 @@ int main(){
 						for (int id = 0; id < 19; id++) {//センサ全部でチェック
 							for (int h = 0; h < height; h++) {
 								for (int w = 0; w < width; w++) {
+									if (id != 9 && id != 11) {
+										sensor[id].pAdd(positive[num - 1][h][w] * in[id][h][w], 0);
+										continue;
+									}
+									if (id != 7 && id != 13) {
+										sensor[id].pAdd(0, positive[num - 1][h][w] * out[id][h][w]);
+										continue;
+									}
 									sensor[id].pAdd(positive[num - 1][h][w] * in[id][h][w], positive[num - 1][h][w] * out[id][h][w]);
 								}
 							}
