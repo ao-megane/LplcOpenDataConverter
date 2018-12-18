@@ -202,7 +202,7 @@ int main(){
 		date = 1;
 		int data[19 * 2] = { 0 };
 		//30日分のtime時をまとめて処理
-		for (int time = 5; time < 24; time++) {
+		//for (int time = 5; time < 24; time++) {
 			year = 2018;
 			month = 6;
 			date = 1;
@@ -221,9 +221,9 @@ int main(){
 					//tomorrow(&year, &month, &date);
 					//continue;
 				}
-				cout << time << ":";
+				//cout << time << ":";
 				cout << date << ":";
-				cout << count << ":" << endl;
+				//cout << count << ":" << endl;
 				//マップ初期化
 				for (int i = 0; i < map.size(); ++i) {
 					for (int j = 0; j < map[i].size(); ++j) {
@@ -247,16 +247,18 @@ int main(){
 				i = 0;
 				while (getline(ifs, line)) {//オープンデータ内のループ
 					vector<string> strvec = split(line, ',');//データ一行ゲット
-					if (strvec.at(2) == ttos(time,0)) {//データの時間評価
+					//if (strvec.at(2) == ttos(start,0)) {//データの時間評価
+					if(strvec.at(2) == start){
 						isTracking = true;
 					}
 					if (isTracking) {
-						if (strvec.at(2) == ttos(time+1,0)) {
+						//if (strvec.at(2) == ttos(end,0)) {
+						if (strvec.at(2) == end) {
 							isTracking = false;
 						}
 					}
 					if (isTracking) {
-						//cout << "計測中" << endl;
+						//cout << "計測中" ;
 
 						//cout << strvec.at(2) << endl;
 						//センサ更新
@@ -294,9 +296,10 @@ int main(){
 			}//30日終わり
 
 			//対象者について
-			//for (int posnum = 100; posnum <= 1000; posnum += 100) {
+			for (int pos = 0; pos <= 200; pos += 10) {
 				//int posnum = 1000;	//平日で割られるので，実質50人くらい
-				int posnum = workdaynum * 200;
+				cout << pos << endl;
+				int posnum = workdaynum * pos;
 				int num;
 				for (int i = 0; i < 30; i++) {//30倍回して
 					for (int t = 0; t < posnum; t++) {//人数
@@ -322,10 +325,10 @@ int main(){
 					sensor[id].pDivision(30.0);
 				}
 
-				/*filename = "results/add_positive_pertime/";
-				filename += to_string(posnum);
-				filename += ".csv";
-				ofs.open(filename, ios::trunc);*/
+				//filename = "results/add_positive_pertime/";
+				//filename += to_string(posnum / workdaynum);
+				//filename += ".csv";
+				//ofs.open(filename, ios::trunc);
 				//ofs.setf(ios_base::fixed, ios_base::floatfield);
 				int negdata = 0;
 				int posdata = 0;
@@ -333,22 +336,23 @@ int main(){
 					//ofs << i + 1 << "," << sensor[i].GetSumnIn()/30.0 << "," << sensor[i].GetSumnOut()/30.0;
 					negdata += (sensor[i].GetSumnIn() + sensor[i].GetSumnOut());
 					posdata += (sensor[i].GetSumpIn() + sensor[i].GetSumpOut());
-					/*ofs << i + 1 << ",";
-					ofs << fixed << setprecision(5) << (double)sensor[i].GetRatio() << endl;*/
+					//ofs << i + 1 << ",";
+					//ofs << fixed << setprecision(5) << (double)sensor[i].GetRatio() << "," << sensor[i].GetSumnIn()+sensor[i].GetSumnOut() <<"," << sensor[i].GetSumpIn() + sensor[i].GetSumpOut() << endl;
 				}
-				cout << time << ":neg:" << negdata << "pos" << posdata << endl;
-				ratio[time] = (double)(negdata) / (posdata + negdata);
-				//ofs.close();
+				////cout << time << ":neg:" << negdata << "pos" << posdata << endl;
+				////ratio[time] = (double)(negdata) / (posdata + negdata);
+				////ofs.close();
 
-				cout << posnum << ":対象者出力終わり" << endl;
-			//}
-		}
+				//cout << pos << ":対象者出力終わり" << endl;
+				ratio[pos/10] = (double)(negdata) / (posdata + negdata);
+			}
+		//}
 	}//range終わり
 
 	filename = "results/add_positive_pertime/result.csv";
 	ofs.open(filename, ios::trunc);
-	for (int time = 5; time < 24; time++) {
-		ofs << time << "," << fixed << setprecision(5) << (double)ratio[time] << endl;
+	for (int pos = 0; pos <= 200; pos += 10) {
+		ofs << pos << "," << fixed << setprecision(5) << (double)ratio[pos/10] << endl;
 	}
 	ofs.close();
 
