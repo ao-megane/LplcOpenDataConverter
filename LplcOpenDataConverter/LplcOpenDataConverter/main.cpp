@@ -149,7 +149,6 @@ int main(){
 		default:
 			break;
 		}*/
-		range = 11;
 		//各センサに有効範囲を格納(センサについてのforループ)
 		for (int i = 0; i < 19; i++) {
 			filename = "mapdatas/allmap/";
@@ -216,7 +215,7 @@ int main(){
 		date = 1;
 		int data[19 * 2] = { 0 };
 		//30日分のtime時をまとめて処理
-		/*
+		
 		for (int count = 0; count < 30; count++) {
 			if (aaa(year, month, date) == 0 || aaa(year, month, date) == 6) {
 				cout << "休日(カウントしない)" << ttos(year, month, date) << endl;
@@ -294,7 +293,7 @@ int main(){
 
 			tomorrow(&year, &month, &date);
 		}//30日終わり
-		*/
+		
 		
 
 		//対象者について
@@ -330,33 +329,33 @@ int main(){
 		//}
 
 		//デバッグ
-		int posnum = 200;
-		int num;
-		for (int i = 0; i < 19; i++) {
-			sensor[i].pInitialize();
-		}
-		for (int i = 0; i < 30; i++) {//30倍回して
-			for (int t = 0; t < posnum; t++) {//人数
-				num = GetPosNum();
-				for (int id = 0; id < 19; id++) {
-					for (int h = 0; h < height; h++) {
-						for (int w = 0; w < width; w++) {
-							if (id != 9 && id != 11) {
-								map[h][w] += positive[num - 1][h][w] * in[id][h][w];
-							}
-							if (id != 7 && id != 13) {
-								map[h][w] += positive[num - 1][h][w] * out[id][h][w];
-							}
-						}
-					}
-				}
-			}
-		}
-		for (int h = 0; h < height; h++) {
-			for (int w = 0; w < width; w++) {
-				map[h][w] /= 30.0;
-			}
-		}
+		//int posnum = 200;
+		//int num;
+		//for (int i = 0; i < 19; i++) {
+		//	sensor[i].pInitialize();
+		//}
+		//for (int i = 0; i < 30; i++) {//30倍回して
+		//	for (int t = 0; t < posnum; t++) {//人数
+		//		num = GetPosNum();
+		//		for (int id = 0; id < 19; id++) {
+		//			for (int h = 0; h < height; h++) {
+		//				for (int w = 0; w < width; w++) {
+		//					if (id != 9 && id != 11) {
+		//						map[h][w] += positive[num - 1][h][w] * in[id][h][w];
+		//					}
+		//					if (id != 7 && id != 13) {
+		//						map[h][w] += positive[num - 1][h][w] * out[id][h][w];
+		//					}
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
+		//for (int h = 0; h < height; h++) {
+		//	for (int w = 0; w < width; w++) {
+		//		map[h][w] /= 30.0;
+		//	}
+		//}
 	}//range終わり
 
 	filename = "results/add_positive/result";
@@ -364,11 +363,15 @@ int main(){
 	filename += ".csv";
 	ofs.open(filename, ios::trunc);
 	//ofs.setf(ios_base::fixed, ios_base::floatfield);
-	for (int h = 0; h < height; h++) {
+	/*for (int h = 0; h < height; h++) {
 		for (int w = 0; w < width; w++) {
 			ofs << map[h][w] << ",";
 		}
 		ofs << endl;
+	}*/
+	ofs << "2018/6平日7～8時の合計" << endl;
+	for (int i = 0; i < 19; i++) {
+		ofs << i+1 << "," << sensor[i].GetnOut() + sensor[i].GetnIn() << endl;
 	}
 	ofs.close();
 
@@ -396,6 +399,7 @@ int main(){
 	//ofs.close();
 
 	int a;
+	cout << "終わった";
 	scanf_s("%d", &a);
 
 	return 0;
