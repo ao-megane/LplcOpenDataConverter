@@ -369,9 +369,10 @@ int main(){
 		}
 		ofs << endl;
 	}*/
+	ofs.setf(ios_base::fixed, ios_base::floatfield);
 	ofs << "2018/6•½“ú7`8‚Ìˆê“ú‚ ‚½‚è‚Ì•½‹Ï" << endl;
 	for (int i = 0; i < 19; i++) {
-		ofs << i+1 << "," << (sensor[i].GetSumnOut() + sensor[i].GetSumnIn())/workdaynum << endl;
+		ofs << i+1 << "," << (double)(sensor[i].GetSumnOut() + sensor[i].GetSumnIn())/workdaynum << endl;
 	}
 	ofs.close();
 
